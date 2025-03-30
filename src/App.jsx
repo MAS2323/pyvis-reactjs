@@ -1,18 +1,20 @@
 import React from "react";
 import CesiumViewer from "./components/CesiumViewer";
-import "./App.css"; // Importa el archivo CSS
+import { CesiumProvider } from "./CesiumContext";
+import "./App.css";
 import Toolbar from "./components/Toolbar";
 import Popup from "./components/Popup";
 import FloatingButtons from "./components/FloatingButtons";
-import Footer from "./components/Footer";
 
 function App() {
   return (
     <div>
-      <CesiumViewer />
-      <Toolbar />
-      <Popup />
-      <FloatingButtons />
+      <CesiumProvider>
+        <CesiumViewer />
+        <Toolbar />
+        <Popup />
+        <FloatingButtons />
+      </CesiumProvider>
     </div>
   );
 }

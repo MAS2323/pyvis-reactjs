@@ -1,6 +1,8 @@
 import React from "react";
 
 const Footer = ({ cameraInfo }) => {
+  if (!cameraInfo) return null; // No renderiza el Footer si no hay datos
+
   return (
     <footer className="cesium-footer">
       <div className="footer-left">
@@ -15,4 +17,5 @@ const Footer = ({ cameraInfo }) => {
     </footer>
   );
 };
+
 export default Footer;
