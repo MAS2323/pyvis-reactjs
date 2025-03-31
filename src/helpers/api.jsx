@@ -8,25 +8,6 @@ const getSerialNumber = (sn) => {
   return sn;
 };
 
-export const fetchDevice = async (sn) => {
-  const serialNumber = getSerialNumber(sn);
-  if (!serialNumber) return null;
-
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/device-info/${encodeURIComponent(serialNumber)}`
-    );
-    if (!response.ok) {
-      if (response.status === 404) return null;
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`Error fetching device with SN ${serialNumber}:`, error);
-    return null;
-  }
-};
-
 export const fetchAllDevices = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/device-info/`);
@@ -35,28 +16,6 @@ export const fetchAllDevices = async () => {
   } catch (error) {
     console.error("Error fetching all devices:", error);
     return [];
-  }
-};
-
-export const fetchFibcab = async (sn) => {
-  const serialNumber = getSerialNumber(sn);
-  if (!serialNumber) return null;
-
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/fibcab/dev-info/${encodeURIComponent(serialNumber)}`
-    );
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.warn(`Fibcab with SN ${serialNumber} not found`);
-        return null;
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`Error fetching fibcab with SN ${serialNumber}:`, error);
-    return null;
   }
 };
 
@@ -84,5 +43,72 @@ export const fetchFibcabsForDevice = async (deviceSn) => {
       error
     );
     return [];
+  }
+};
+
+export const fetchDevice = async (sn) => {
+  const serialNumber = getSerialNumber(sn);
+  if (!serialNumber) {
+    console.error("SN inválido o no proporcionado.");
+    return null;
+  }
+
+  try {
+    console.log(`Buscando dispositivo con SN: ${serialNumber}`);
+    const response = await fetch(
+      `${API_BASE_URL}/device-info/${encodeURIComponent(serialNumber)}`
+    );
+
+    console.log(`Respuesta del servidor para SN ${serialNumber}:`, response);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`Dispositivo con SN ${serialNumber} no encontrado.`);
+        return null;
+      }
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(`Datos recibidos para SN ${serialNumber}:`, data);
+    return data;
+  } catch (error) {
+    console.error(
+      `Error al obtener el dispositivo con SN ${serialNumber}:`,
+      error
+    );
+    return null;
+  }
+};
+
+export const fetchFibcab = async (sn) => {
+  const serialNumber = getSerialNumber(sn);
+  if (!serialNumber) {
+    console.error("SN inválido o no proporcionado.");
+    return null;
+  }
+
+  try {
+    console.log(`Buscando fibra con SN: ${serialNumber}`);
+    const response = await fetch(
+      `${API_BASE_URL}/fibcab/dev-info/${encodeURIComponent(serialNumber)}`
+    );
+
+    console.log(`Respuesta del servidor para SN ${serialNumber}:`, response);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`Fibra con SN ${serialNumber} no encontrada.`);
+        return null;
+      }
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(`Datos recibidos para SN ${serialNumber}:`, data);
+    return data;
+  } catch (error) {
+    console.error(`Error al obtener la fibra con SN ${serialNumber}:`, error);
+    return null;
   }
 };
