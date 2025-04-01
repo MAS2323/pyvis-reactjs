@@ -24,7 +24,7 @@ export const cesiumOptions = {
   selectionIndicator: false,
   animation: false,
   timeline: false,
-  geocoder: false,
+  geocoder: true,
   baseLayerPicker: false, // Desactivar el selector de capas base
   creditContainer: document.createElement("div"), // Ocultar créditos
 };

@@ -1,78 +1,71 @@
-import React, { useState, useEffect } from "react";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import React, { useState } from "react";
+import { useCesium } from "../CesiumContext";
 
-const Toolbar = ({ viewer }) => {
+const Toolbar = () => {
+  const { viewer } = useCesium();
   const [searchTerm, setSearchTerm] = useState("");
-  const [geocoder, setGeocoder] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    if (!viewer) return;
-
-    // Inicializar el Geocoder de Cesium
-    const cesiumGeocoder = new Cesium.Geocoder({
-      container: document.createElement("div"), // No necesitamos mostrar el widget por defecto
-      geocoderServices: [
-        new Cesium.IonGeocoderService({
-          accessToken: "your_ion_access_token", // Reemplaza con tu token de Cesium Ion
-        }),
-        // Puedes agregar más servicios de geocoding aquí
-      ],
-      autoComplete: true, // Habilitar autocompletado
-    });
-
-    setGeocoder(cesiumGeocoder);
-
-    return () => {
-      // Limpieza si es necesario
-    };
-  }, [viewer]);
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSearchSubmit = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    if (!geocoder || !searchTerm.trim()) return;
+    if (!viewer || !searchTerm.trim()) return;
+
+    setIsSearching(true);
 
     try {
-      // Realizar la búsqueda
-      const results = await geocoder.geocode(searchTerm);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchTerm
+        )}`
+      );
+      const results = await response.json();
 
       if (results.length > 0) {
-        // Volar a la primera ubicación encontrada
+        const firstResult = results[0];
         viewer.camera.flyTo({
-          destination: results[0].destination,
-          duration: 2,
-          complete: () => {
-            // Puedes mostrar un marcador o información adicional aquí
-            console.log("Ubicación encontrada:", results[0]);
-          },
+          destination: Cesium.Cartesian3.fromDegrees(
+            parseFloat(firstResult.lon),
+            parseFloat(firstResult.lat),
+            10000
+          ),
+          duration: 1.5,
         });
-      } else {
-        console.log("No se encontraron resultados para:", searchTerm);
       }
-    } catch (error) {
-      console.error("Error en la búsqueda:", error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
   return (
-    <div className="toolbar">
-      <form onSubmit={handleSearchSubmit} className="search-container">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Buscar dirección o lugar..."
-          className="search-input"
-        />
-        <button type="submit" className="search-button">
-          <i className="fas fa-search"></i>
-        </button>
-      </form>
-      <div className="toolbar-icons">{/* Otros íconos de la toolbar */}</div>
-    </div>
+    <header className="app-header">
+      <div className="header-title">
+        基于PyViz的智能光SDH数字孪生前端技术研究
+      </div>
+
+      <div className="search-container-wrapper">
+        <form onSubmit={handleSearch} className="search-container">
+          <button type="submit" className="search-button">
+            <i className="fas fa-search"></i>
+          </button>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={isSearching}
+          />
+        </form>
+      </div>
+
+      <div className="header-menu">
+        <button className="header-menu-item">File</button>
+        <button className="header-menu-item">View</button>
+        <button className="header-menu-item">Add</button>
+        <button className="header-menu-item">Tools</button>
+        <button className="header-menu-item">Help</button>
+      </div>
+    </header>
   );
 };
 
