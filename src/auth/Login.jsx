@@ -1,49 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    // Simular un inicio de sesión exitoso
-    console.log("Inicio de sesión exitoso. Redirigiendo...");
-
-    // Guardar el estado de inicio de sesión en localStorage
-    localStorage.setItem("isLoggedIn", "true");
-
-    // Redirigir a la página principal
-    navigate("/");
-  };
-
+const Welcome = () => {
   return (
     <div className="auth-container">
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-      <p>
-        Don't have an account? <Link to="/register">Register here</Link>
-      </p>
+      <h1>Welcome to 基于PyViz的智能光SDH数字孪生前端技术研究</h1>
+      <p>Please log in or register to continue.</p>
+      <Link to="/login" className="btn">
+        Go to Login
+      </Link>
     </div>
   );
 };
 
-export default Login;
+export default Welcome;

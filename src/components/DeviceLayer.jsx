@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useCesium } from "../CesiumContext";
-import {
-  fetchAllDevices,
-  fetchDevice,
-  fetchFibcabsForDevice,
-} from "../helpers/api";
-import NodePopup from "./NodePopup";
+import { fetchAllDevices, fetchFibcabsForDevice } from "../helpers/api";
+import BottomRightPanel from "./RightPanel"; // Componente renombrado
+import LeftPanel from "./LeftPanel";
 import FibcabPopup from "./FibcabPopup";
 
 const DeviceLayer = () => {
@@ -20,30 +17,37 @@ const DeviceLayer = () => {
         const devices = await fetchAllDevices();
 
         for (const device of devices) {
-          const deviceDetails = await fetchDevice(device.sn);
-          const fibcabs = await fetchFibcabsForDevice(device.sn);
-
-          // Agregar dispositivo si tiene coordenadas válidas
           if (isValidCoordinate(device.longitude, device.lattitude)) {
-            addDeviceEntity(viewer, device);
-          } else {
-            console.error(
-              `Coordenadas inválidas para dispositivo ${device.sn}`
-            );
+            const deviceWithType = {
+              ...device,
+              Type: "Device",
+            };
+            addDeviceEntity(viewer, deviceWithType);
           }
 
-          // Agregar fibras asociadas
-          addFibcabEntities(viewer, fibcabs);
+          try {
+            const fibcabs = await fetchFibcabsForDevice(device.sn);
+            addFibcabEntities(viewer, fibcabs);
+          } catch (error) {
+            console.error(
+              `Error loading fibcabs for device ${device.sn}:`,
+              error
+            );
+          }
         }
       } catch (error) {
-        console.error("Error loading devices and fibers:", error);
+        console.error("Error loading devices:", error);
       }
     };
 
     loadDevicesAndFibers();
 
     const handleSelection = (selected) => {
-      setSelectedEntity(selected);
+      if (selected && selected.data) {
+        setSelectedEntity(selected);
+      } else {
+        setSelectedEntity(null);
+      }
     };
 
     viewer.selectedEntityChanged.addEventListener(handleSelection);
@@ -53,25 +57,37 @@ const DeviceLayer = () => {
     };
   }, [viewer]);
 
-  return (
-    <>
-      {selectedEntity?.data?.Type && (
-        <NodePopup
-          entity={selectedEntity}
-          onClose={() => setSelectedEntity(null)}
-        />
-      )}
-      {selectedEntity?.data?.sn && !selectedEntity.data.Type && (
+  const renderPopups = () => {
+    if (!selectedEntity?.data) return null;
+
+    if (selectedEntity.data.Type) {
+      return (
+        <>
+          <LeftPanel
+            data={selectedEntity.data}
+            onClose={() => setSelectedEntity(null)}
+          />
+          <BottomRightPanel data={selectedEntity.data} />
+        </>
+      );
+    } else if (
+      selectedEntity.data.source_longitude &&
+      selectedEntity.data.target_longitude
+    ) {
+      return (
         <FibcabPopup
           entity={selectedEntity}
           onClose={() => setSelectedEntity(null)}
         />
-      )}
-    </>
-  );
-};
+      );
+    }
 
-// Helper functions
+    return null;
+  };
+
+  return renderPopups();
+};
+// Helper functions (se mantienen igual)
 const addDeviceEntity = (viewer, device) => {
   const devicePosition = Cesium.Cartesian3.fromDegrees(
     parseFloat(device.longitude),

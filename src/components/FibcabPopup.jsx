@@ -3,6 +3,17 @@ import React from "react";
 const FibcabPopup = ({ entity, onClose }) => {
   const { data } = entity;
 
+  // Mapear los nombres de los campos según lo que recibes del servidor
+  const fiberData = {
+    sn: data.sn || "N/A",
+    length: data.length || data.cable_length || "N/A",
+    fiberType: data.fiber_type || data.type || "N/A",
+    status: data.status || data.operational_status || "N/A",
+    source: data.source_name || data.source_device || "N/A",
+    target: data.target_name || data.target_device || "N/A",
+    // Agrega más mapeos según necesites
+  };
+
   return (
     <div
       style={{
@@ -10,11 +21,12 @@ const FibcabPopup = ({ entity, onClose }) => {
         top: "10px",
         left: "10px",
         zIndex: 1000,
-        background: "white",
+        background: "#0009",
         padding: "10px",
         borderRadius: "5px",
         boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
         maxWidth: "300px",
+        marginTop: 60,
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -28,22 +40,22 @@ const FibcabPopup = ({ entity, onClose }) => {
       </div>
       <hr style={{ margin: "5px 0" }} />
       <p>
-        <strong>SN:</strong> {data.sn}
+        <strong>SN:</strong> {fiberData.sn}
       </p>
       <p>
-        <strong>Longitud:</strong> {data.length || "N/A"} m
+        <strong>Longitud:</strong> {fiberData.length} m
       </p>
       <p>
-        <strong>Tipo de fibra:</strong> {data.fiberType || "N/A"}
+        <strong>Tipo de fibra:</strong> {fiberData.fiberType}
       </p>
       <p>
-        <strong>Estado:</strong> {data.status || "N/A"}
+        <strong>Estado:</strong> {fiberData.status}
       </p>
       <p>
-        <strong>Origen:</strong> {data.source_name || "N/A"}
+        <strong>Origen:</strong> {fiberData.source}
       </p>
       <p>
-        <strong>Destino:</strong> {data.target_name || "N/A"}
+        <strong>Destino:</strong> {fiberData.target}
       </p>
     </div>
   );

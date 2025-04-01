@@ -11,10 +11,14 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/material": "^7.0.1",
     "axios": "^1.8.4",
     "cesium": "^1.127.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.1",
+    "resium": "^1.19.0-beta.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
