@@ -544,3 +544,52 @@ export const fetchAllRelatedFibcabs = async (sn) => {
     );
   }
 };
+
+// Añadir estas funciones a tus helpers/api.js
+export const fetchIolpInfo = async (sn) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/iolp/dev-info/${encodeURIComponent(sn)}`
+    );
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching IOLP info for SN ${sn}:`, error);
+    return null;
+  }
+};
+
+export const fetchIolpConfig = async (sn) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/iolp/dev-config/${encodeURIComponent(sn)}`
+    );
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching IOLP config for SN ${sn}:`, error);
+    return null;
+  }
+};
+
+export const fetchIolpState = async (sn) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/iolp/dev-state/${encodeURIComponent(sn)}`
+    );
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching IOLP state for SN ${sn}:`, error);
+    return null;
+  }
+};

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useCesium } from "../CesiumContext";
 import { fetchAllDevices, fetchFibcabsForDevice } from "../helpers/api";
-import BottomRightPanel from "./RightPanel"; // Componente renombrado
-import LeftPanel from "./LeftPanel";
-import FibcabPopup from "./FibcabPopup";
+import BottomRightPanel from "./node/RightPanel";
+import LeftPanel from "./node/LeftPanel";
+import FibcabLeftPanel from "./fibcab/FibcabLeftPanel"; // Nuevo componente
+import FibcabRightPanel from "./fibcab/FibcabRightPanel"; // Nuevo componente
 
 const DeviceLayer = () => {
   const { viewer } = useCesium();
@@ -60,6 +61,7 @@ const DeviceLayer = () => {
   const renderPopups = () => {
     if (!selectedEntity?.data) return null;
 
+    // Dispositivo (tiene campo Type)
     if (selectedEntity.data.Type) {
       return (
         <>
@@ -70,15 +72,20 @@ const DeviceLayer = () => {
           <BottomRightPanel data={selectedEntity.data} />
         </>
       );
-    } else if (
+    }
+    // Fibra (tiene source_longitude y target_longitude)
+    else if (
       selectedEntity.data.source_longitude &&
       selectedEntity.data.target_longitude
     ) {
       return (
-        <FibcabPopup
-          entity={selectedEntity}
-          onClose={() => setSelectedEntity(null)}
-        />
+        <>
+          <FibcabLeftPanel
+            data={selectedEntity.data}
+            onClose={() => setSelectedEntity(null)}
+          />
+          <FibcabRightPanel data={selectedEntity.data} />
+        </>
       );
     }
 
@@ -87,6 +94,7 @@ const DeviceLayer = () => {
 
   return renderPopups();
 };
+
 // Helper functions (se mantienen igual)
 const addDeviceEntity = (viewer, device) => {
   const devicePosition = Cesium.Cartesian3.fromDegrees(
