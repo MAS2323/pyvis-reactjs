@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { fetchFibcabState } from "../../helpers/api";
+import { fetchFibcabState, calculateFibcabParameters } from "../../helpers/api";
+import BottleneckIndicator from "../../components/BottleneckIndicator";
 
 const FibcabLeftPanel = ({ data, onClose }) => {
   const [fibcabState, setFibcabState] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [fibcabParams, setFibcabParams] = useState(null);
+  const [loading, setLoading] = useState({
+    state: false,
+    params: false,
+  });
 
   useEffect(() => {
     if (data?.sn) {
-      setLoading(true);
+      // Cargar estado de la fibra
+      setLoading((prev) => ({ ...prev, state: true }));
       const fetchState = async () => {
         try {
-          // Usamos el SN de la fibra para obtener su estado
           const state = await fetchFibcabState(data.sn);
           setFibcabState(state);
         } catch (error) {
           console.error("Error fetching fibcab state:", error);
         } finally {
-          setLoading(false);
+          setLoading((prev) => ({ ...prev, state: false }));
         }
       };
+
+      // Cargar parámetros calculados
+      setLoading((prev) => ({ ...prev, params: true }));
+      const fetchParams = async () => {
+        try {
+          const params = await calculateFibcabParameters(data.sn);
+          setFibcabParams(params);
+        } catch (error) {
+          console.error("Error calculating fibcab parameters:", error);
+        } finally {
+          setLoading((prev) => ({ ...prev, params: false }));
+        }
+      };
+
       fetchState();
+      fetchParams();
     }
   }, [data?.sn]);
 
@@ -30,70 +50,80 @@ const FibcabLeftPanel = ({ data, onClose }) => {
       "ID de Grupo": data.gId || "N/A",
     },
     Conexiones: {
-      "Dispositivo Origen": data.source_sn || "N/A",
-      "Dispositivo Destino": data.target_sn || "N/A",
+      Origen: data.source_sn || "N/A",
+      Destino: data.target_sn || "N/A",
+      "Ciudad Origen": data.source_city || "N/A",
+      "Ciudad Destino": data.target_city || "N/A",
     },
   };
 
-  // Añadir sección de estado si está disponible
+  // Añadir parámetros técnicos si están disponibles
+  if (fibcabParams) {
+    detailedInfo["Parámetros Técnicos"] = {
+      Distancia: fibcabParams.distance_km
+        ? `${fibcabParams.distance_km} km`
+        : "N/A",
+      "Atenuación Total": fibcabParams.total_attenuation_db
+        ? `${fibcabParams.total_attenuation_db} dB`
+        : "N/A",
+      Capacidad: fibcabParams.fibcab_capacity
+        ? `${fibcabParams.fibcab_capacity} Gbps`
+        : "N/A",
+      "Coef. Atenuación": fibcabParams.attenuation_coefficient_db_per_km
+        ? `${fibcabParams.attenuation_coefficient_db_per_km} dB/km`
+        : "N/A",
+    };
+  }
+
+  // Añadir estado FIBCAB si está disponible
   if (fibcabState) {
-    detailedInfo["Estado de la Fibra"] = {
+    detailedInfo["Estado"] = {
       "Punto de Salud":
         fibcabState.health_point !== null
           ? `${fibcabState.health_point}%`
           : "N/A",
       Advertencias: fibcabState.warnings || "Ninguna",
       Crisis: fibcabState.crisis || "Ninguna",
+      ...(fibcabState.warnlog_url
+        ? {
+            "Log Advertencias": (
+              <a
+                href={fibcabState.warnlog_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver
+              </a>
+            ),
+          }
+        : {}),
+      ...(fibcabState.crislog_url
+        ? {
+            "Log Crisis": (
+              <a
+                href={fibcabState.crislog_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver
+              </a>
+            ),
+          }
+        : {}),
+      ...(fibcabState.rawfile_url
+        ? {
+            "Datos RAW": (
+              <a
+                href={fibcabState.rawfile_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Descargar
+              </a>
+            ),
+          }
+        : {}),
     };
-
-    // Añadir URLs solo si existen
-    if (
-      fibcabState.warnlog_url ||
-      fibcabState.crislog_url ||
-      fibcabState.rawfile_url
-    ) {
-      detailedInfo["Enlaces"] = {
-        ...(fibcabState.warnlog_url
-          ? {
-              "Log de Advertencias": (
-                <a
-                  href={fibcabState.warnlog_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Ver
-                </a>
-              ),
-            }
-          : {}),
-        ...(fibcabState.crislog_url
-          ? {
-              "Log de Crisis": (
-                <a
-                  href={fibcabState.crislog_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Ver
-                </a>
-              ),
-            }
-          : {}),
-        ...(fibcabState.rawfile_url
-          ? {
-              "Datos RAW": (
-                <a
-                  href={fibcabState.rawfile_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Descargar
-                </a>
-              ),
-            }
-          : {}),
-      };
-    }
   }
 
   return (
@@ -119,7 +149,9 @@ const FibcabLeftPanel = ({ data, onClose }) => {
           alignItems: "center",
         }}
       >
-        <h3 style={{ margin: 0, color: "#2c3e50" }}>Detalles de Fibra</h3>
+        <h3 style={{ margin: 0, color: "#2c3e50" }}>
+          Detalles de Fibra - {data.sn}
+        </h3>
         <button
           onClick={onClose}
           style={{
@@ -136,10 +168,18 @@ const FibcabLeftPanel = ({ data, onClose }) => {
 
       <hr style={{ margin: "10px 0", borderColor: "#ecf0f1" }} />
 
-      {loading && (
+      {(loading.state || loading.params) && (
         <div style={{ textAlign: "center", padding: "10px", color: "#7f8c8d" }}>
-          Cargando estado de la fibra...
+          Cargando información...
         </div>
+      )}
+
+      {/* Indicador de cuello de botella */}
+      {fibcabParams && fibcabState && (
+        <BottleneckIndicator
+          capacity={fibcabParams.fibcab_capacity}
+          health={fibcabState.health_point}
+        />
       )}
 
       {Object.entries(detailedInfo).map(([category, fields]) => (

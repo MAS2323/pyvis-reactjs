@@ -4,6 +4,7 @@ import { CesiumProvider } from "./CesiumContext";
 import "./App.css";
 import Toolbar from "./components/Toolbar";
 import FloatingButtons from "./components/FloatingButtons";
+import GlobalBottleneckMonitor from "./components/GlobalBottleneckMonitor";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <CesiumViewer />
         <Toolbar />
         <FloatingButtons />
+        <GlobalBottleneckMonitor />
       </CesiumProvider>
     </div>
   );
