@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { useCesium } from "../CesiumContext";
+import { useCesium } from "../../CesiumContext";
 import {
   cesiumOptions,
   addTiandituLayers,
   flyToInitialPosition,
-} from "../components/cesiumConfig";
-import Toolbar from "./Toolbar";
-import Footer from "./Footer";
+} from "../cesium/cesiumConfig";
+import Toolbar from "../viewer/Toolbar";
+import Footer from "../viewer/Footer";
 import CameraInfo from "./CameraInfo";
-import DeviceLayer from "./DeviceLayer";
+import DeviceLayer from "../DeviceLayer";
 
 const CesiumViewer = () => {
   const cesiumContainer = useRef(null);

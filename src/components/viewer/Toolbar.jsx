@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCesium } from "../CesiumContext";
+import { useCesium } from "../../CesiumContext";
 
 const Toolbar = () => {
   const { viewer } = useCesium();

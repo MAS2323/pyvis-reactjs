@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchFibcabState, calculateFibcabParameters } from "../../helpers/api";
-import BottleneckIndicator from "../../components/BottleneckIndicator";
+import BottleneckIndicator from "../../components/viewer/BottleneckIndicator";
 
 const FibcabLeftPanel = ({ data, onClose }) => {
   const [fibcabState, setFibcabState] = useState(null);

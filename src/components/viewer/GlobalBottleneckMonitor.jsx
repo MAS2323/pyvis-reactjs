@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchBottlenecks } from "../helpers/api";
+import { fetchBottlenecks } from "../../helpers/api";
 
 const GlobalBottleneckMonitor = () => {
   const [bottlenecks, setBottlenecks] = useState([]);

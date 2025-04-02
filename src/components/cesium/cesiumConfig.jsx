@@ -43,10 +43,10 @@ export const addTiandituLayers = (viewer) => {
   // Establecer la opacidad de las capas adicionales
   viewer.imageryLayers.get(1).alpha = 0.8; // Opacidad para la capa de anotaciones en chino
   viewer.imageryLayers.get(2).alpha = 0.8; // Opacidad para la capa de anotaciones en inglés
-  // // Configuración de la cámara
+  // Configuración de la cámara
   // viewer.scene.screenSpaceCameraController.zoomFactor = 1.1; // Controla la velocidad del zoom
-  // viewer.scene.screenSpaceCameraController.minimumZoomDistance = 50000; // Mínimo zoom (en metros)
-  // viewer.scene.screenSpaceCameraController.maximumZoomDistance = 5000000; // Máximo zoom (en metros)
+  viewer.scene.screenSpaceCameraController.minimumZoomDistance = 500; // Mínimo zoom (en metros)
+  viewer.scene.screenSpaceCameraController.maximumZoomDistance = 5000000; // Máximo zoom (en metros)
 };
 
 // Función para realizar el vuelo inicial de la cámara

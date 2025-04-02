@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { calculateFibcabParameters } from "../helpers/api";
+import { calculateFibcabParameters } from "../../helpers/api";
 
 const FibcabParameters = ({ fibcabSn }) => {
   const [parameters, setParameters] = useState(null);

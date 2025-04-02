@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useCesium } from "../CesiumContext";
+import { useCesium } from "../../CesiumContext";
 
 const CameraInfo = () => {
   const { viewer } = useCesium();
