@@ -355,3 +355,43 @@ body {
 .search-input:focus + .search-button {
   color: #5f6368;
 }
+
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1c2526;
+  color: white;
+  font-size: 24px;
+  z-index: 9999;
+}
+
+/* Asegúrate que el auth-container tenga el z-index correcto */
+.auth-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c2526;
+  z-index: 10000;
+  padding: 20px;
+}
+
+/* Asegúrate que el contenedor de Cesium no se muestre cuando no debe */
+.auth-mode #cesiumContainer,
+.auth-mode .toolbar,
+.auth-mode .floating-buttons,
+.auth-mode footer {
+  display: none !important;
+}

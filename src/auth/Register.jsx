@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -7,44 +7,38 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Simular un registro exitoso
-    console.log("Registro exitoso. Redirigiendo...");
-
-    // Guardar el estado de registro en localStorage
-    localStorage.setItem("username", username);
-    localStorage.setItem("email", email);
-
-    // Redirigir a la página de inicio de sesión
+    // Handle registration logic here
+    console.log("Registration submitted");
+    // After registration, you might want to automatically log in
     navigate("/login");
   };
 
   return (
     <div className="auth-container">
       <h1>Register</h1>
-      <form onSubmit={handleRegister}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Username"
+          required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          required
         />
         <input
           type="email"
           placeholder="Email"
+          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
         <input
           type="password"
           placeholder="Password"
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
         <button type="submit">Register</button>
       </form>

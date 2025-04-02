@@ -1,16 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Welcome = () => {
+const Login = ({ onLogin }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically verify credentials
+    console.log("Login successful");
+    onLogin();
+    navigate("/");
+  };
+
   return (
     <div className="auth-container">
-      <h1>Welcome to 基于PyViz的智能光SDH数字孪生前端技术研究</h1>
-      <p>Please log in or register to continue.</p>
-      <Link to="/login" className="btn">
-        Go to Login
-      </Link>
+      <h1>Login</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Login</button>
+      </form>
+      <p>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
     </div>
   );
 };
 
-export default Welcome;
+export default Login;

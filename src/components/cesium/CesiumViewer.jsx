@@ -10,7 +10,7 @@ import Footer from "../viewer/Footer";
 import CameraInfo from "./CameraInfo";
 import DeviceLayer from "../DeviceLayer";
 
-const CesiumViewer = () => {
+const CesiumViewer = ({ onLogout }) => {
   const cesiumContainer = useRef(null);
   const { viewer, setViewer } = useCesium();
 
@@ -38,6 +38,23 @@ const CesiumViewer = () => {
       {viewer && <CameraInfo />}
       {viewer && <Toolbar viewer={viewer} />}
       {viewer && <Footer />}
+      <button
+        onClick={onLogout}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: "1000",
+          padding: "8px 16px",
+          background: "#ff5722",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 };
