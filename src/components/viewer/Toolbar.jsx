@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { useCesium } from "../../CesiumContext";
+import FileMenu from "../pages/FileMenu";
+import ViewMenu from "../pages/ViewMenu";
+import AddMenu from "../pages/AddMenu";
+import ToolsMenu from "../pages/ToolsMenu";
+import HelpMenu from "../pages/HelpMenu";
 
 const Toolbar = () => {
   const { viewer } = useCesium();
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -36,6 +42,27 @@ const Toolbar = () => {
     }
   };
 
+  const toggleMenu = (menu) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  };
+
+  const renderMenuContent = () => {
+    switch (activeMenu) {
+      case "file":
+        return <FileMenu />;
+      case "view":
+        return <ViewMenu />;
+      case "add":
+        return <AddMenu />;
+      case "tools":
+        return <ToolsMenu />;
+      case "help":
+        return <HelpMenu />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <header className="app-header">
       <div className="header-title">
@@ -59,12 +86,48 @@ const Toolbar = () => {
       </div>
 
       <div className="header-menu">
-        <button className="header-menu-item">File</button>
-        <button className="header-menu-item">View</button>
-        <button className="header-menu-item">Add</button>
-        <button className="header-menu-item">Tools</button>
-        <button className="header-menu-item">Help</button>
+        <button
+          className={`header-menu-item ${
+            activeMenu === "file" ? "active" : ""
+          }`}
+          onClick={() => toggleMenu("file")}
+        >
+          File
+        </button>
+        <button
+          className={`header-menu-item ${
+            activeMenu === "view" ? "active" : ""
+          }`}
+          onClick={() => toggleMenu("view")}
+        >
+          View
+        </button>
+        <button
+          className={`header-menu-item ${activeMenu === "add" ? "active" : ""}`}
+          onClick={() => toggleMenu("add")}
+        >
+          Add
+        </button>
+        <button
+          className={`header-menu-item ${
+            activeMenu === "tools" ? "active" : ""
+          }`}
+          onClick={() => toggleMenu("tools")}
+        >
+          Tools
+        </button>
+        <button
+          className={`header-menu-item ${
+            activeMenu === "help" ? "active" : ""
+          }`}
+          onClick={() => toggleMenu("help")}
+        >
+          Help
+        </button>
       </div>
+
+      {/* Renderiza el contenido del menú activo */}
+      {activeMenu && <div className="menu-dropdown">{renderMenuContent()}</div>}
     </header>
   );
 };

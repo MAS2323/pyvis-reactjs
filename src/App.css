@@ -250,12 +250,12 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: rgba(38, 38, 38, 0.9);
+  background-color: rgba(38, 38, 38, 1);
   padding: 5px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 1);
   height: 40px;
 }
 
@@ -373,7 +373,7 @@ body {
 }
 
 /* Asegúrate que el auth-container tenga el z-index correcto */
-.auth-container {
+.auth-container2 {
   position: fixed;
   top: 0;
   left: 0;
@@ -387,6 +387,22 @@ body {
   z-index: 10000;
   padding: 20px;
 }
+.auth-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c2526;
+  z-index: 10000;
+  margin: auto;
+  max-width: 400px;
+  padding: 20px;
+}
 
 /* Asegúrate que el contenedor de Cesium no se muestre cuando no debe */
 .auth-mode #cesiumContainer,
@@ -394,4 +410,140 @@ body {
 .auth-mode .floating-buttons,
 .auth-mode footer {
   display: none !important;
+}
+
+/* 8888888888888888888888888888888 */
+
+/* Estilos para el popup del FileMenu - Versión derecha */
+.file-menu-popup.right-side {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  left: auto; /* Anula cualquier posición izquierda */
+  z-index: 1000;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+/* Mantenemos todos los demás estilos exactamente iguales */
+.file-menu-container {
+  padding: 20px;
+  background: #2d2d2d;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  width: 350px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444;
+}
+
+.file-menu-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.file-menu-tab {
+  padding: 6px 12px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.file-menu-tab:hover {
+  background: #555;
+  transform: translateY(-1px);
+}
+
+.file-menu-tab.active {
+  background: #007bff;
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+.file-menu-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-menu-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #ddd;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #444;
+}
+
+.file-menu-table-container {
+  flex: 1;
+  overflow: auto;
+  margin-top: 10px;
+}
+
+.file-menu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.file-menu-table th,
+.file-menu-table td {
+  padding: 8px 10px;
+  border: 1px solid #444;
+  text-align: left;
+}
+
+.file-menu-table th {
+  background: #333;
+  position: sticky;
+  top: 0;
+}
+
+.file-menu-table tr:nth-child(even) {
+  background: #252525;
+}
+
+.file-menu-loading,
+.file-menu-empty {
+  color: #aaa;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
+}
+
+.file-menu-error {
+  color: #ff6b6b;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Scrollbar styling */
+.file-menu-table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.file-menu-table-container::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.file-menu-table-container::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.file-menu-table-container::-webkit-scrollbar-thumb:hover {
+  background: #666;
 }

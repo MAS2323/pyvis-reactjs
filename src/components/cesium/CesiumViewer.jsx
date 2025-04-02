@@ -51,6 +51,7 @@ const CesiumViewer = ({ onLogout }) => {
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
+          marginTop: 40,
         }}
       >
         Logout

@@ -1,5 +1,5 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
-
+// ==================== FUNCIONES DE FETCH ====================
 // Función auxiliar para extraer el SN de un objeto si es necesario
 const getSerialNumber = (sn) => {
   if (typeof sn === "object" && sn !== null) {
@@ -7,44 +7,6 @@ const getSerialNumber = (sn) => {
   }
   return sn;
 };
-
-// export const fetchAllDevices = async () => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/device-info/`);
-//     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Error fetching all devices:", error);
-//     return [];
-//   }
-// };
-
-// export const fetchFibcabsForDevice = async (deviceSn) => {
-//   const serialNumber = getSerialNumber(deviceSn);
-//   if (!serialNumber) return [];
-
-//   try {
-//     const response = await fetch(
-//       `${API_BASE_URL}/fibcab/dev-info/?device_sn=${encodeURIComponent(
-//         serialNumber
-//       )}`
-//     );
-//     if (!response.ok) {
-//       if (response.status === 404) {
-//         console.warn(`No fibcabs found for device SN ${serialNumber}`);
-//         return [];
-//       }
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     return await response.json();
-//   } catch (error) {
-//     console.error(
-//       `Error fetching fibcabs for device SN ${serialNumber}:`,
-//       error
-//     );
-//     return [];
-//   }
-// };
 
 export const fetchDevice = async (sn) => {
   const serialNumber = getSerialNumber(sn);
@@ -591,5 +553,101 @@ export const fetchIolpState = async (sn) => {
   } catch (error) {
     console.error(`Error fetching IOLP state for SN ${sn}:`, error);
     return null;
+  }
+};
+
+// JMPMAT
+export const fetchJmpmat = async (gId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/jmpmat/${encodeURIComponent(gId)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching JMPMAT ${gId}: ${err.message}`);
+  }
+};
+
+export const fetchAllJmpmats = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/jmpmat/`);
+    return response.data;
+  } catch (err) {
+    throw new Error(`Error fetching all JMPMATs: ${err.message}`);
+  }
+};
+
+// SDH
+export const fetchSdhInfo = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/sdh/dev-info/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching SDH info ${sn}: ${err.message}`);
+  }
+};
+
+export const fetchSdhConfig = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/sdh/dev-config/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching SDH config ${sn}: ${err.message}`);
+  }
+};
+
+export const fetchSdhState = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/sdh/dev-state/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching SDH state ${sn}: ${err.message}`);
+  }
+};
+
+// TRAFFSTUB
+export const fetchTraffstubInfo = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/traffstub/dev-info/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching TRAFFSTUB info ${sn}: ${err.message}`);
+  }
+};
+
+export const fetchTraffstubConfig = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/traffstub/dev-config/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching TRAFFSTUB config ${sn}: ${err.message}`);
+  }
+};
+
+export const fetchTraffstubState = async (sn) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/traffstub/dev-state/${encodeURIComponent(sn)}`
+    );
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw new Error(`Error fetching TRAFFSTUB state ${sn}: ${err.message}`);
   }
 };
