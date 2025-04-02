@@ -18,7 +18,7 @@ export const terrainProvider = new Cesium.EllipsoidTerrainProvider();
 
 // Configuración de las capas de Tianditu
 export const cesiumOptions = {
-  imageryProvider: createImageryProvider("img_w"), // Capa base de imágenes satelitales
+  // imageryProvider: createImageryProvider("img_w"), // Capa base de imágenes satelitales
   terrainProvider: terrainProvider, // Terreno básico
   infoBox: false,
   selectionIndicator: false,

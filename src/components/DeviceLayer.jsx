@@ -147,7 +147,7 @@ const addFibcabEntities = (viewer, fibcabs) => {
       viewer.entities.add({
         polyline: {
           positions: [startPosition, endPosition],
-          width: 2,
+          width: 5,
           material: Cesium.Color.BLUE,
           clampToGround: true,
         },
