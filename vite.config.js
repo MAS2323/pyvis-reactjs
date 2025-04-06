@@ -7,4 +7,7 @@ export default defineConfig({
   define: {
     CESIUM_BASE_URL: JSON.stringify("node_modules/cesium/Build/Cesium"),
   },
+  server: {
+    host: "0.0.0.0",
+  },
 });

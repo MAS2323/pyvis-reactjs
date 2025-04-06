@@ -1,4 +1,5 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
+import axios from "axios";
 // ==================== FUNCIONES DE FETCH ====================
 // Función auxiliar para extraer el SN de un objeto si es necesario
 const getSerialNumber = (sn) => {
@@ -510,9 +511,7 @@ export const fetchAllRelatedFibcabs = async (sn) => {
 // Añadir estas funciones a tus helpers/api.js
 export const fetchIolpInfo = async (sn) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/iolp/dev-info/${encodeURIComponent(sn)}`
-    );
+    const response = await fetch(`${API_BASE_URL}/iolp/dev-info`);
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -581,9 +580,7 @@ export const fetchAllJmpmats = async () => {
 // SDH
 export const fetchSdhInfo = async (sn) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/sdh/dev-info/${encodeURIComponent(sn)}`
-    );
+    const response = await axios.get(`${API_BASE_URL}/sdh/dev-info`);
     return response.data;
   } catch (err) {
     if (err.response?.status === 404) return null;
@@ -618,9 +615,7 @@ export const fetchSdhState = async (sn) => {
 // TRAFFSTUB
 export const fetchTraffstubInfo = async (sn) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/traffstub/dev-info/${encodeURIComponent(sn)}`
-    );
+    const response = await axios.get(`${API_BASE_URL}/traffstub/dev-info`);
     return response.data;
   } catch (err) {
     if (err.response?.status === 404) return null;
@@ -651,3 +646,4 @@ export const fetchTraffstubState = async (sn) => {
     throw new Error(`Error fetching TRAFFSTUB state ${sn}: ${err.message}`);
   }
 };
+

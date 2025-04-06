@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCesium } from "../../CesiumContext";
 import {
   cesiumOptions,
@@ -9,51 +9,85 @@ import Toolbar from "../viewer/Toolbar";
 import Footer from "../viewer/Footer";
 import CameraInfo from "./CameraInfo";
 import DeviceLayer from "../DeviceLayer";
+import FloatingButtons from "../viewer/FloatingButtons";
+import "./CesiumViewer.css"; // Import the CSS file
 
 const CesiumViewer = ({ onLogout }) => {
-  const cesiumContainer = useRef(null);
+  const cesiumContainerRef = useRef(null);
+  const viewerRef = useRef(null);
   const { viewer, setViewer } = useCesium();
+  const [roadNetworkEnabled, setRoadNetworkEnabled] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  // Handle window resize
   useEffect(() => {
-    if (!cesiumContainer.current) return;
-
-    const viewerInstance = new Cesium.Viewer(
-      cesiumContainer.current,
-      cesiumOptions
-    );
-    addTiandituLayers(viewerInstance);
-    flyToInitialPosition(viewerInstance);
-
-    setViewer(viewerInstance);
-
-    return () => {
-      viewerInstance.destroy();
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (viewerRef.current) {
+        viewerRef.current.resize();
+      }
     };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Initialize Cesium viewer
+  useEffect(() => {
+    if (!cesiumContainerRef.current) return;
+
+    const viewerInstance = new Cesium.Viewer(
+      cesiumContainerRef.current,
+      cesiumOptions
+    );
+
+    viewerRef.current = viewerInstance;
+    addTiandituLayers(viewerInstance, "img_w", roadNetworkEnabled);
+    flyToInitialPosition(viewerInstance);
+    setViewer(viewerInstance);
+
+    // Adjust camera controls for mobile
+    if (isMobile) {
+      viewerInstance.scene.screenSpaceCameraController.minimumZoomDistance = 100;
+      viewerInstance.scene.screenSpaceCameraController.zoomFactor = 2.0;
+    }
+
+    return () => {
+      if (viewerInstance && !viewerInstance.isDestroyed()) {
+        viewerInstance.destroy();
+      }
+    };
+  }, [isMobile]);
+
+  const handleLayerChange = (layerType) => {
+    if (viewerRef.current) {
+      addTiandituLayers(viewerRef.current, layerType, roadNetworkEnabled);
+    }
+  };
+
+  const handleToggleRoadNetwork = (enabled) => {
+    setRoadNetworkEnabled(enabled);
+    if (viewerRef.current) {
+      addTiandituLayers(viewerRef.current, undefined, enabled);
+    }
+  };
+
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      <div ref={cesiumContainer} style={{ width: "100%", height: "100%" }} />
+    <div className="cesium-viewer-container">
+      <div ref={cesiumContainerRef} className="cesium-container" />
       {viewer && <DeviceLayer />}
       {viewer && <CameraInfo />}
-      {viewer && <Toolbar viewer={viewer} />}
-      {viewer && <Footer />}
-      <button
-        onClick={onLogout}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: "1000",
-          padding: "8px 16px",
-          background: "#ff5722",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginTop: 40,
-        }}
-      >
+      {viewer && (
+        <FloatingButtons
+          onLayerChange={handleLayerChange}
+          onToggleRoadNetwork={handleToggleRoadNetwork}
+          roadNetworkEnabled={roadNetworkEnabled}
+          isMobile={isMobile}
+        />
+      )}
+      {viewer && <Toolbar viewer={viewer} isMobile={isMobile} />}
+      {viewer && <Footer isMobile={isMobile} />}
+      <button onClick={onLogout} className="logout-button">
         Logout
       </button>
     </div>
