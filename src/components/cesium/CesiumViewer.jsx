@@ -90,11 +90,14 @@ const CesiumViewer = ({ onLogout }) => {
           isMobile={isMobile}
         />
       )}
-      {viewer && <Toolbar viewer={viewer} isMobile={isMobile} />}
+      {viewer && (
+        <Toolbar
+          viewer={viewer}
+          isMobile={isMobile}
+          onLogout={onLogout} // Pass onLogout to Toolbar
+        />
+      )}
       {viewer && <Footer isMobile={isMobile} />}
-      <button onClick={onLogout} className="logout-button">
-        Logout
-      </button>
     </div>
   );
 };

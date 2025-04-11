@@ -2,21 +2,22 @@ import React, { useState, useRef, useEffect } from "react";
 import { useCesium } from "../../CesiumContext";
 import FileMenu from "../pages/FileMenu";
 import ViewMenu from "../pages/ViewMenu";
-import AddMenu from "../pages/AddMenu";
-import ToolsMenu from "../pages/ToolsMenu";
-import HelpMenu from "../pages/HelpMenu";
+import UserMenu from "../pages/UserMenu";
 import "./styles/Toolbar.css";
 
-const Toolbar = () => {
-  const { viewer } = useCesium();
+const Toolbar = ({ viewer, isMobile, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeMenu, setActiveMenu] = useState(null);
   const toolbarRef = useRef(null);
+  const dropdownRef = useRef(null);
 
-  // Cerrar menú al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (toolbarRef.current && !toolbarRef.current.contains(event.target)) {
+      const isMenuButton = event.target.closest(".toolbar-menu button");
+      const isDropdown =
+        dropdownRef.current && dropdownRef.current.contains(event.target);
+
+      if (!isMenuButton && !isDropdown) {
         setActiveMenu(null);
       }
     };
@@ -28,7 +29,39 @@ const Toolbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (!viewer || !searchTerm.trim()) return;
-    // ... (tu lógica de búsqueda)
+
+    const geocoderService = new Cesium.IonGeocoderService({
+      scene: viewer.scene,
+    });
+
+    geocoderService
+      .geocode(searchTerm.trim())
+      .then((results) => {
+        if (results.length === 0) {
+          console.warn("No results found for:", searchTerm);
+          setSearchTerm("");
+          return;
+        }
+
+        const result = results[0];
+        const destination = result.destination;
+
+        viewer.camera.flyTo({
+          destination: destination,
+          duration: 3,
+          orientation: {
+            heading: Cesium.Math.toRadians(0.0),
+            pitch: Cesium.Math.toRadians(-45.0),
+            roll: 0.0,
+          },
+        });
+
+        setSearchTerm("");
+      })
+      .catch((error) => {
+        console.error("Error during geocoding:", error);
+        setSearchTerm("");
+      });
   };
 
   const toggleMenu = (menu) => {
@@ -39,9 +72,12 @@ const Toolbar = () => {
     const menus = {
       file: <FileMenu closeMenu={() => setActiveMenu(null)} />,
       view: <ViewMenu closeMenu={() => setActiveMenu(null)} />,
-      add: <AddMenu closeMenu={() => setActiveMenu(null)} />,
-      tools: <ToolsMenu closeMenu={() => setActiveMenu(null)} />,
-      help: <HelpMenu closeMenu={() => setActiveMenu(null)} />,
+      User: (
+        <UserMenu
+          closeMenu={() => setActiveMenu(null)}
+          onLogout={onLogout} // Pass onLogout to UserMenu
+        />
+      ),
     };
     return menus[activeMenu] || null;
   };
@@ -67,14 +103,17 @@ const Toolbar = () => {
       </div>
 
       <div className="toolbar-menu">
-        {["file", "view", "add", "tools", "help"].map((menu) => (
+        {["file", "view", "User"].map((menu) => (
           <button key={menu} onClick={() => toggleMenu(menu)}>
             {menu.charAt(0).toUpperCase() + menu.slice(1)}
           </button>
         ))}
       </div>
 
-      <div className={`toolbar-dropdown ${activeMenu ? "active" : ""}`}>
+      <div
+        className={`toolbar-dropdown ${activeMenu ? "active" : ""}`}
+        ref={dropdownRef}
+      >
         {renderMenu()}
       </div>
     </div>
