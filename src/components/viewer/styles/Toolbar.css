@@ -97,23 +97,6 @@
 }
 
 /* Dropdown - Con mayor separación */
-.toolbar-dropdown {
-  /* position: absolute;
-  top: 50px;
-  right: 20px;
-  background: rgba(45, 45, 45, 0.98);
-  border-radius: 6px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  z-index: 1001;
-  padding: 12px;
-  min-width: 280px;
-  backdrop-filter: blur(8px);
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transform: translateY(10px);
-  opacity: 0;
-  transition: all 0.3s ease; */
-}
 
 .toolbar-dropdown.active {
   display: block;
