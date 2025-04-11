@@ -156,6 +156,33 @@ export const fetchFibcabsForDevice = async (deviceSn) => {
   }
 };
 
+export const fetchAllFibcabs = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/fibcab/dev-info-all/`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    return handleFetchError(error, "obteniendo todas las FIBCABs");
+  }
+};
+
+// export const fetchAllFibcabInfo = async () => {
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/fibcab/dev-info/`);
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+
+//     return await response.json();
+//   } catch (error) {
+//     return handleFetchError(error, "obteniendo toda la información de FIBCABs");
+//   }
+// };
 // ==================== FIBCAB Dev Config ====================
 export const createFibcabConfig = async (fibcabConfigData) => {
   try {
@@ -647,3 +674,43 @@ export const fetchTraffstubState = async (sn) => {
   }
 };
 
+// ==================== FUNCIONES PARA VISUALIZACIÓN ====================
+export const fetchProcessedData = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pyviz/processed-data`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener datos procesados:", error);
+    throw error;
+  }
+};
+
+export const fetchDevicesGeoJSON = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pyviz/devices`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener dispositivos GeoJSON:", error);
+    throw error;
+  }
+};
+
+export const fetchNetworkGeoJSON = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pyviz/network`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener red GeoJSON:", error);
+    throw error;
+  }
+};
+
+export const fetchCesiumConfig = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pyviz/cesium-config`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener configuración de Cesium:", error);
+    throw error;
+  }
+};

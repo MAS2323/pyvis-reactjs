@@ -3,11 +3,12 @@ import {
   fetchAllDevices,
   fetchFibcabsForDevice,
   fetchIolpInfo,
+  fetchAllFibcabs,
   fetchAllJmpmats,
   fetchSdhInfo,
   fetchTraffstubInfo,
 } from "../../helpers/api";
-
+import "./styles/FileMenu.css"; // Assuming you have a CSS file for styling
 export default function FileMenu() {
   const [activeTab, setActiveTab] = useState("device");
   const [loading, setLoading] = useState(false);
@@ -26,10 +27,10 @@ export default function FileMenu() {
           result = await fetchAllDevices();
           break;
         case "fibcab":
-          result = await fetchFibcabsForDevice("sample-device-sn");
+          result = await fetchAllFibcabs();
           break;
         case "iolp":
-          result = await fetchIolpInfo("sample-iolp-sn");
+          result = await fetchIolpInfo();
           result = result ? [result] : [];
           break;
         case "jmpmat":

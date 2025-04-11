@@ -1,134 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useCesium } from "../../CesiumContext";
 import FileMenu from "../pages/FileMenu";
 import ViewMenu from "../pages/ViewMenu";
 import AddMenu from "../pages/AddMenu";
 import ToolsMenu from "../pages/ToolsMenu";
 import HelpMenu from "../pages/HelpMenu";
+import "./styles/Toolbar.css";
 
 const Toolbar = () => {
   const { viewer } = useCesium();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const toolbarRef = useRef(null);
 
-  const handleSearch = async (e) => {
+  // Cerrar menú al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (toolbarRef.current && !toolbarRef.current.contains(event.target)) {
+        setActiveMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSearch = (e) => {
     e.preventDefault();
     if (!viewer || !searchTerm.trim()) return;
-
-    setIsSearching(true);
-
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          searchTerm
-        )}`
-      );
-      const results = await response.json();
-
-      if (results.length > 0) {
-        const firstResult = results[0];
-        viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(
-            parseFloat(firstResult.lon),
-            parseFloat(firstResult.lat),
-            10000
-          ),
-          duration: 1.5,
-        });
-      }
-    } finally {
-      setIsSearching(false);
-    }
+    // ... (tu lógica de búsqueda)
   };
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
 
-  const renderMenuContent = () => {
-    switch (activeMenu) {
-      case "file":
-        return <FileMenu />;
-      case "view":
-        return <ViewMenu />;
-      case "add":
-        return <AddMenu />;
-      case "tools":
-        return <ToolsMenu />;
-      case "help":
-        return <HelpMenu />;
-      default:
-        return null;
-    }
+  const renderMenu = () => {
+    const menus = {
+      file: <FileMenu closeMenu={() => setActiveMenu(null)} />,
+      view: <ViewMenu closeMenu={() => setActiveMenu(null)} />,
+      add: <AddMenu closeMenu={() => setActiveMenu(null)} />,
+      tools: <ToolsMenu closeMenu={() => setActiveMenu(null)} />,
+      help: <HelpMenu closeMenu={() => setActiveMenu(null)} />,
+    };
+    return menus[activeMenu] || null;
   };
 
   return (
-    <header className="app-header">
-      <div className="header-title">
+    <div className="toolbar-container" ref={toolbarRef}>
+      <div className="toolbar-title">
         基于PyViz的智能光SDH数字孪生前端技术研究
       </div>
 
-      <div className="search-container-wrapper">
-        <form onSubmit={handleSearch} className="search-container">
-          <button type="submit" className="search-button">
-            <i className="fas fa-search"></i>
+      <div className="toolbar-search-container">
+        <form className="toolbar-search" onSubmit={handleSearch}>
+          <button type="submit" aria-label="Buscar">
+            <i className="fas fa-search" />
           </button>
           <input
             type="text"
-            className="search-input"
-            placeholder="Search..."
+            placeholder="Buscar..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            disabled={isSearching}
           />
         </form>
       </div>
 
-      <div className="header-menu">
-        <button
-          className={`header-menu-item ${
-            activeMenu === "file" ? "active" : ""
-          }`}
-          onClick={() => toggleMenu("file")}
-        >
-          File
-        </button>
-        <button
-          className={`header-menu-item ${
-            activeMenu === "view" ? "active" : ""
-          }`}
-          onClick={() => toggleMenu("view")}
-        >
-          View
-        </button>
-        <button
-          className={`header-menu-item ${activeMenu === "add" ? "active" : ""}`}
-          onClick={() => toggleMenu("add")}
-        >
-          Add
-        </button>
-        <button
-          className={`header-menu-item ${
-            activeMenu === "tools" ? "active" : ""
-          }`}
-          onClick={() => toggleMenu("tools")}
-        >
-          Tools
-        </button>
-        <button
-          className={`header-menu-item ${
-            activeMenu === "help" ? "active" : ""
-          }`}
-          onClick={() => toggleMenu("help")}
-        >
-          Help
-        </button>
+      <div className="toolbar-menu">
+        {["file", "view", "add", "tools", "help"].map((menu) => (
+          <button key={menu} onClick={() => toggleMenu(menu)}>
+            {menu.charAt(0).toUpperCase() + menu.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* Renderiza el contenido del menú activo */}
-      {activeMenu && <div className="menu-dropdown">{renderMenuContent()}</div>}
-    </header>
+      <div className={`toolbar-dropdown ${activeMenu ? "active" : ""}`}>
+        {renderMenu()}
+      </div>
+    </div>
   );
 };
 

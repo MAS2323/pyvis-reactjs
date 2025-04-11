@@ -52,8 +52,11 @@ export const addTiandituLayers = (
   }
 
   // Eliminar todas las capas excepto las que queremos mantener
-  while (viewer.imageryLayers.length > 0) {
-    viewer.imageryLayers.remove(viewer.imageryLayers.get(0), true);
+  for (let i = viewer.imageryLayers.length - 1; i >= 0; i--) {
+    const layer = viewer.imageryLayers.get(i);
+    if (!layersToKeep.includes(layer)) {
+      viewer.imageryLayers.remove(layer, true);
+    }
   }
 
   // Restaurar capas que queremos mantener

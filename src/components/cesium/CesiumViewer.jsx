@@ -8,6 +8,7 @@ import {
 import Toolbar from "../viewer/Toolbar";
 import Footer from "../viewer/Footer";
 import CameraInfo from "./CameraInfo";
+import ErrorBoundary from "./ErrorBoundary";
 import DeviceLayer from "../DeviceLayer";
 import FloatingButtons from "../viewer/FloatingButtons";
 import "./CesiumViewer.css"; // Import the CSS file
@@ -76,7 +77,11 @@ const CesiumViewer = ({ onLogout }) => {
     <div className="cesium-viewer-container">
       <div ref={cesiumContainerRef} className="cesium-container" />
       {viewer && <DeviceLayer />}
-      {viewer && <CameraInfo />}
+      {viewer && (
+        <ErrorBoundary>
+          <CameraInfo />
+        </ErrorBoundary>
+      )}
       {viewer && (
         <FloatingButtons
           onLayerChange={handleLayerChange}

@@ -1,0 +1,193 @@
+/* FileMenu.css - Estilos responsive para el menú de archivos */
+
+/* Contenedor principal del popup */
+.file-menu-popup.right-side {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  max-height: 80vh;
+  overflow: hidden;
+  width: 350px;
+  margin-top: 300px;
+}
+
+/* Contenedor interno */
+.file-menu-container {
+  padding: 15px;
+  background: #2d2d2d;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444;
+}
+
+/* Pestañas del menú */
+.file-menu-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.file-menu-tab {
+  padding: 6px 12px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.file-menu-tab:hover {
+  background: #555;
+}
+
+.file-menu-tab.active {
+  background: #007bff;
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Contenido del menú */
+.file-menu-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-menu-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #ddd;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #444;
+}
+
+/* Tabla de datos */
+.file-menu-table-container {
+  flex: 1;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+.file-menu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.file-menu-table th,
+.file-menu-table td {
+  padding: 8px 10px;
+  border: 1px solid #444;
+  text-align: left;
+}
+
+.file-menu-table th {
+  background: #333;
+  position: sticky;
+  top: 0;
+}
+
+.file-menu-table tr:nth-child(even) {
+  background: #252525;
+}
+
+/* Estados del menú */
+.file-menu-loading,
+.file-menu-empty {
+  color: #aaa;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
+}
+
+.file-menu-error {
+  color: #ff6b6b;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Scrollbar */
+.file-menu-table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.file-menu-table-container::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.file-menu-table-container::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.file-menu-table-container::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Media Queries para responsive */
+@media (max-width: 768px) {
+  .file-menu-popup.right-side {
+    width: 300px;
+    right: 10px;
+  }
+
+  .file-menu-container {
+    padding: 12px;
+  }
+
+  .file-menu-tab {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .file-menu-table th,
+  .file-menu-table td {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 576px) {
+  .file-menu-popup.right-side {
+    width: 280px;
+    top: 60px;
+    right: 10px;
+    transform: none;
+    max-height: calc(100vh - 80px);
+  }
+
+  .file-menu-container {
+    max-height: calc(100vh - 100px);
+  }
+
+  .file-menu-tabs {
+    gap: 4px;
+  }
+
+  .file-menu-tab {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .file-menu-popup.right-side {
+    width: calc(100% - 20px);
+    right: 10px;
+    left: 10px;
+  }
+}

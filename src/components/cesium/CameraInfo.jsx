@@ -9,7 +9,7 @@ const CameraInfo = () => {
   });
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewer.scene) return;
 
     const updateCameraData = () => {
       try {
@@ -37,7 +37,9 @@ const CameraInfo = () => {
     updateCameraData();
 
     return () => {
-      viewer.camera.moveEnd.removeEventListener(updateCameraData);
+      if (viewer.camera.moveEnd) {
+        viewer.camera.moveEnd.removeEventListener(updateCameraData);
+      }
     };
   }, [viewer]);
 
